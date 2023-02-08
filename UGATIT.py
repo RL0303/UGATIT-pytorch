@@ -114,24 +114,25 @@ class UGATIT(object) :
         self.disLA = Discriminator(input_nc=3, ndf=self.ch, n_layers=5).to(self.device)
         self.disLB = Discriminator(input_nc=3, ndf=self.ch, n_layers=5).to(self.device)
 
-        """Print the total number of parameters in the network """
+        """ Print the total number of parameters in the network """
         print('---------- Networks initialized -------------')
-        num_params = 0
-        for param in self.genA2B.parameters():
-            num_params += param.numel()
-        print('[Network %s] Total number of parameters : %.3f M' % ("genA2B", num_params / 1e6))
-        print('-----------------------------------------------')
-
-        # for name in self.model_names:
-        #     if isinstance(name, str):
-        #         net = getattr(self, 'net' + name)
-        #         num_params = 0
-        #         for param in net.parameters():
-        #             num_params += param.numel()
-        #         if verbose:
-        #             print(net)
-        #         print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
+        # num_params = 0
+        # for param in self.genA2B.parameters():
+        #     num_params += param.numel()
+        # print('[Network %s] Total number of parameters : %.3f M' % ("genA2B", num_params / 1e6))
         # print('-----------------------------------------------')
+
+        self.model_names = ["genA2B", "genB2A", "disGA", "disGB", "disLA", "disLB"]
+        for name in self.model_names:
+            if isinstance(name, str):
+                # net = getattr(self, 'net' + name)
+                net = getattr(self, name)
+                num_params = 0
+                for param in net.parameters():
+                    num_params += param.numel()
+                # print(net)
+                print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
+        print('-----------------------------------------------')
 
         """ Define Loss """
         self.L1_loss = nn.L1Loss().to(self.device)
